@@ -12,3 +12,38 @@ This is a lightweight JavaScript snippet that auto-scrolls the live chat (`#msg-
 5. If pasting doesn't work, first type:
    ```js
    allow pasting
+and press Enter.
+
+6. Then, copy and paste the following script into the console:
+```js
+   (function autoScrollMsgAreaWhenNewContent() {
+  const container = document.getElementById('msg-area');
+
+  if (!container) {
+    console.warn('❌ ไม่พบ element ที่มี id="msg-area"');
+    return;
+  }
+
+  let isUserAtBottom = true;
+
+  function checkIfAtBottom() {
+    const threshold = 10;
+    const atBottom = container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
+    isUserAtBottom = atBottom;
+  }
+
+  const observer = new MutationObserver(() => {
+    if (isUserAtBottom) {
+      container.scrollTop = container.scrollHeight;
+    }
+  });
+
+  observer.observe(container, {
+    childList: true,
+    subtree: true,
+  });
+
+  container.addEventListener('scroll', checkIfAtBottom);
+
+  console.log('✅ ระบบ auto-scroll พร้อมทำงานเมื่อมี content ใหม่ใน #msg-area');
+})();
